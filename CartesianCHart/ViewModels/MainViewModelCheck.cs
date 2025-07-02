@@ -37,6 +37,7 @@ namespace CartesianCHart.ViewModels
                 var aggregated = DataHelper.AggregatePerMinute(rawData);
                 _aggregatedDataSets.Add(aggregated);
 
+                // Approach1 - InMemory Operation
                 var lineSeries = new LineSeries<double>
                 {
                     Values = aggregated.Select(x => x.Value).ToArray(),
@@ -46,7 +47,6 @@ namespace CartesianCHart.ViewModels
                     Name = $"Dataset {i + 1}",
                     IsVisible = true // initially visible
                 };
-
                 Series.Add(lineSeries);
 
                 var toggle = new DatasetToggle
@@ -96,7 +96,8 @@ namespace CartesianCHart.ViewModels
                     series.IsVisible = toggle.IsChecked;
                 }
             }
-            //RefreshSeries();
+            // Approach 2: Dataset rebinds
+           // RefreshSeries();
         }
 
         private void RefreshSeries()
