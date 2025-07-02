@@ -36,5 +36,10 @@ namespace CartesianCHart
         {
             MainFrame.Navigate(new RealTimeSimuMultiDataset());
         }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new LineChartCheckboxes());
+        }
     }
 }

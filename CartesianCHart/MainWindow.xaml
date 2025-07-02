@@ -14,6 +14,7 @@
         <StackPanel Background="#2D2D30" Orientation="Vertical">
             <TextBlock Text="Menu" Foreground="White" FontSize="20" Margin="10" />
             <Button Content="Line Chart" Margin="10" Click="ChartView_Click"/>
+            <Button Content="Line Chart Checkbox" Margin="10" Click="Button_Click_1"/>
             <Button Content="Real Time Simulation" Margin="10" Click="OtherPage_Click"/>
             <Button Content="Real Time Multi Dataset" Margin="10" Click="Button_Click" />
         </StackPanel>

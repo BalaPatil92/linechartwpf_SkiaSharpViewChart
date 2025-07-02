@@ -118,6 +118,9 @@
     </ApplicationDefinition>
     <Compile Include="Helper\DataHelper.cs" />
     <Compile Include="Model\DataPoint.cs" />
+    <Compile Include="Samples\LineChartCheckboxes.xaml.cs">
+      <DependentUpon>LineChartCheckboxes.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Samples\LineChart.xaml.cs">
       <DependentUpon>LineChart.xaml</DependentUpon>
     </Compile>
@@ -127,6 +130,8 @@
     <Compile Include="Samples\LineChartLiveUpdated.xaml.cs">
       <DependentUpon>LineChartLiveUpdated.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\DatasetToggle.cs" />
+    <Compile Include="ViewModels\MainViewModelCheck.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\RealTImeSimulationMultiDataset.cs" />
     <Compile Include="ViewModels\MainViewModelLiveUpdates.cs" />
@@ -142,6 +147,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Samples\LineChartCheckboxes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Samples\LineChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
