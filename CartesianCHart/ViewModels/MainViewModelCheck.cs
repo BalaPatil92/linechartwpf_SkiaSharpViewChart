@@ -37,6 +37,18 @@ namespace CartesianCHart.ViewModels
                 var aggregated = DataHelper.AggregatePerMinute(rawData);
                 _aggregatedDataSets.Add(aggregated);
 
+                var lineSeries = new LineSeries<double>
+                {
+                    Values = aggregated.Select(x => x.Value).ToArray(),
+                    Fill = null,
+                    Stroke = new SolidColorPaint(GetColorByIndex(i), 2),
+                    GeometrySize = 1,
+                    Name = $"Dataset {i + 1}",
+                    IsVisible = true // initially visible
+                };
+
+                Series.Add(lineSeries);
+
                 var toggle = new DatasetToggle
                 {
                     Name = $"Dataset {i + 1}",
@@ -76,7 +88,15 @@ namespace CartesianCHart.ViewModels
 
         private void OnDatasetToggleChanged(object sender, EventArgs e)
         {
-            RefreshSeries();
+            if (sender is DatasetToggle toggle)
+            {
+                var series = Series.ElementAtOrDefault(toggle.Index);
+                if (series != null)
+                {
+                    series.IsVisible = toggle.IsChecked;
+                }
+            }
+            //RefreshSeries();
         }
 
         private void RefreshSeries()
