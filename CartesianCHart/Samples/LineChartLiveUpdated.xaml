@@ -9,11 +9,42 @@
         Title="LineChartLiveUpdated" Height="Auto" Width="Auto">
 
     <Grid Margin="10">
-        <lvc:CartesianChart Series="{Binding Series}"
-                            XAxes="{Binding XAxes}"
-                            YAxes="{Binding YAxes}"
-                            ZoomMode="X"
-                            TooltipPosition="Top"
-                            LegendPosition="Top" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Top" Margin="0,0,0,10">
+            <StackPanel>
+                <TextBlock Text="Points/sec"/>
+                <TextBox x:Name="PointsPerSecondBox" Width="120" Height="25"/>
+            </StackPanel>
+
+            <StackPanel Margin="10,0,0,0">
+                <TextBlock Text="Duration (min)"/>
+                <TextBox x:Name="DurationBox" Width="120" Height="25"/>
+            </StackPanel>
+
+            <StackPanel Margin="10,0,0,0">
+                <TextBlock Text="Dataset Count"/>
+                <TextBox x:Name="DatasetCountBox" Width="120" Height="25"/>
+            </StackPanel>
+
+            <Button Content="Load Data" Width="100" Height="25" Margin="10,18,0,0" Click="StartButton_Click"/>
+            <Button Content="Stop" Width="80" Margin="10,18,0,0" Click="StopButton_Click"/>
+            <Button Content="Clear" Width="80" Margin="10,18,0,0" Click="ClearButton_Click"/>
+        </StackPanel>
+
+
+        <Border x:Name="ChartContainer" Grid.Row="1" Visibility="Collapsed">
+            <lvc:CartesianChart x:Name="Chart"
+                        Series="{Binding Series}"
+                        XAxes="{Binding XAxes}"
+                        YAxes="{Binding YAxes}"
+                        ZoomMode="X"
+                        TooltipPosition="Top"
+                        LegendPosition="Top" />
+        </Border>
+
     </Grid>
 </Page>

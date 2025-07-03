@@ -4,6 +4,7 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -13,49 +14,57 @@ namespace CartesianCHart.ViewModels
 {
     public class MainViewModelLiveUpdates : INotifyPropertyChanged
     {
-        private ObservableCollection<double> _values;
-        private ObservableCollection<string> _labels;
+        private List<double> _values;
+        private List<string> _labels;
 
         public ISeries[] Series { get; set; }
         public Axis[] XAxes { get; set; }
         public Axis[] YAxes { get; set; }
 
-        private int _maxPointsToShow = 300;
+        private const int PointsPerSecond = 50000;
+        private const int TotalDurationInSeconds = 600; // 10 minutes
+        private const int MaxPointsToShow = 300_000; // show only last 300K points for performance
+
         private DispatcherTimer _timer;
+        private Random _rand = new Random();
+
+        private LineSeries<double> _lineSeries;
 
         public MainViewModelLiveUpdates()
         {
-            _values = new ObservableCollection<double>();
-            _labels = new ObservableCollection<string>();
+            _values = new List<double>();
+            _labels = new List<string>();
 
-            Series = new ISeries[]
+            _lineSeries = new LineSeries<double>
             {
-                new LineSeries<double>
-                {
-                    Values = _values,
-                    Fill = null,
-                    Stroke = new SolidColorPaint(SKColors.DodgerBlue, 2),
-                    GeometrySize = 3,
-                    Name = "Live Data"
-                }
+                Values = _values,
+                Fill = null,
+                Stroke = new SolidColorPaint(SKColors.OrangeRed, 1.5f),
+                GeometrySize = 0, // Disable geometry for performance
+                Name = "High Frequency Data",
+                LineSmoothness = 0 // Disable smoothing for performance
             };
+
+            Series = new ISeries[] { _lineSeries };
 
             XAxes = new Axis[]
             {
-                new Axis
-                {
-                    Labels = _labels,
-                    LabelsRotation = 45,
-                    TextSize = 12
-                }
+            new Axis
+            {
+                LabelsRotation = 0,
+                TextSize = 10,
+                Name = "Time (Last 10 min)",
+                MinStep = 5000 // reduce label rendering
+            }
             };
 
             YAxes = new Axis[]
             {
-                new Axis
-                {
-                    TextSize = 12
-                }
+            new Axis
+            {
+                TextSize = 10,
+                Name = "Values"
+            }
             };
 
             StartSimulation();
@@ -63,30 +72,36 @@ namespace CartesianCHart.ViewModels
 
         private void StartSimulation()
         {
-            _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+
             _timer.Tick += (s, e) =>
             {
-                var value = GetRandomValue();
-                var timestamp = DateTime.Now.ToString("HH:mm:ss");
+                var newData = GenerateData(PointsPerSecond);
+                _values.AddRange(newData);
 
-                if (_values.Count >= _maxPointsToShow)
-                {
-                    _values.RemoveAt(0);
-                    _labels.RemoveAt(0);
-                }
+                if (_values.Count > MaxPointsToShow)
+                    _values.RemoveRange(0, _values.Count - MaxPointsToShow);
 
-                _values.Add(value);
-                _labels.Add(timestamp);
+                _lineSeries.Values = null; // force refresh
+                _lineSeries.Values = _values;
+
                 OnPropertyChanged(nameof(Series));
             };
+
             _timer.Start();
         }
 
-        private double GetRandomValue()
+        private List<double> GenerateData(int count)
         {
-            Random rand = new Random();
-            return rand.NextDouble() * 100;
+            var data = new List<double>(count);
+            for (int i = 0; i < count; i++)
+            {
+                data.Add(_rand.NextDouble() * 100);
+            }
+            return data;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
